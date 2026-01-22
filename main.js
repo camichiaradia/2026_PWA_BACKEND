@@ -1,14 +1,9 @@
-
 import { connectMongoDB } from "./config/mongoDB.config.js"
-import User from "./models/User.model.js"
-import userRepository from "./repository/user.repository.js"
 import express from 'express'
-import testRouter from "./routes/test.router.js"
 import authRouter from "./routes/auth.router.js"
-import mail_transporter from "./config/mail.config.js"
-import ENVIRONMENT from "./config/environment.config.js"
-import randomMiddleware from "./middlewares/random.middleware.js"
 import cors from 'cors'
+import workspaceRouter from "./routes/workspace.router.js"
+import workspaceRepository from "./repository/workspace.repository.js"
 
 connectMongoDB()
 
@@ -27,22 +22,9 @@ lee el request.headers.['content-type'] y si el valor es 'application/json' ento
 app.use(express.json())
 
 
-app.use('/api/test', testRouter)
 app.use("/api/auth", authRouter)
+app.use("/api/workspace", workspaceRouter)
 
-
-app.get(
-    '/api/suerte/saber', 
-    randomMiddleware,
-    (request, response) =>{
-        if(request.suerte){
-            response.send('Tenes suerte')
-        }
-        else{
-            response.send('No tenes suerte')
-        }
-    }
-)
 
 
 app.listen(
@@ -58,3 +40,48 @@ app.listen(
     subject: 'Probando nodemailer',
     html: `<h1>Probando nodemailer</h1>`
 }) */
+
+    
+/* 
+//Quiero crear un espacio de trabajo de prueba
+*/
+async function crearEspacioDeTrabajo (){  
+
+//Creo el espacio de trabajo de prueba
+    const workspace = await workspaceRepository.create(
+        "6970f1f8d02b28eca522cee7",
+        "test",
+        "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        "Descripcion del espacio de trabajo"
+    )
+    console.log("¡Workspace creado con éxito!")
+//Me agrego como miembro
+    await workspaceRepository.addMember(workspace._id, "6970f1f8d02b28eca522cee7", "owner")
+}
+
+crearEspacioDeTrabajo()
+
+
+/* async function crearEspacioDeTrabajo (){
+
+    //Creo el espacio de trabajo de prueba
+    const workspace = await workspaceRepository.create(
+        '69664b767fa3b6ffd51dcd7b', //Remplazen por su id
+        'test',
+        'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+        'Descripcion del espacio de trabajo'
+    )
+    //Me agrego como miembro
+    await workspaceRepository.addMember(workspace._id, '69664b767fa3b6ffd51dcd7b', 'Owner')
+}
+
+crearEspacioDeTrabajo() */
+
+/* 
+1ero:
+    Crear espacio de trabajo
+    Agregar miembro
+
+2do: Crear endpoint para obtener espacios de trabajo asociados al usuario
+3ro: Probar con postman
+*/

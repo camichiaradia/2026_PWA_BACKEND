@@ -9,7 +9,7 @@ const workspaceMemberSchema = new mongoose.Schema(
         },
         fk_id_workspace: {
             type: String,
-            ref: "Workspaces",
+            ref: "workspaces",
             required: true
         },
         created_at: {
