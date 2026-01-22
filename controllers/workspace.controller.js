@@ -1,4 +1,6 @@
 import workspaceRepository from "../repository/workspace.repository.js"
+import ServerError from "../helpers/error.helpers.js"
+
 
 class WorkspaceController {
     async getWorkspaces (request, response){
@@ -37,6 +39,9 @@ class WorkspaceController {
                 throw new ServerError('No existe ese espacio de trabajo', 404)
             }
             const member_info = await workspaceRepository.getMemberByWorkspaceIdAndUserId(workspace_id, user_id)
+            if (!member_info) {
+                throw new ServerError('No eres miembro de este espacio de trabajo', 403)
+        }
             if (member_info.role !== 'owner') {
                 throw new ServerError('No tienes permiso para eliminar este espacio de trabajo', 403)
             }
@@ -51,7 +56,7 @@ class WorkspaceController {
         catch (error) {
             console.error("--- ERROR EN DELETE ---");
             console.error(error); // Imprime el stack trace completo
-            
+
             /* Si tiene status decimos que es un error controlado (osea es esperable) */
             if (error.status) {
                 return response.json({
