@@ -49,21 +49,18 @@ async function crearEspacioDeTrabajo (){
 
 //Creo el espacio de trabajo de prueba
     const workspace = await workspaceRepository.create(
-        "6970f1f8d02b28eca522cee7",
+        "69739dc3c28542e71874426f",
         "test",
         "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
         "Descripcion del espacio de trabajo"
     )
     console.log("¡Workspace creado con éxito!")
 //Me agrego como miembro
-    await workspaceRepository.addMember(workspace._id, "6970f1f8d02b28eca522cee7", "owner")
+    await workspaceRepository.addMember(workspace._id, "69739dc3c28542e71874426f", "owner")
 }
 
-/* workspaceRepository.addMember("69710dfefbb24419cf9d31e0", "6970f1f8d02b28eca522cee7", "owner") */
-
-/* crearEspacioDeTrabajo() */
-
-
+/* crearEspacioDeTrabajo()
+ */
 /* async function crearEspacioDeTrabajo (){
 
     //Creo el espacio de trabajo de prueba

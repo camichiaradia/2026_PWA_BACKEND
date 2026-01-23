@@ -10,14 +10,17 @@ class WorkspaceRepository {
     async getWorkspacesByUserId(user_id){
         //Busco a todos los miembros que pertenezcan al usuario
         //Esto seria buscar todas mis membresias
-        const workspaces = await workspaceMember.find({fk_id_user: user_id})
+        const workspace = await workspaceMember.find({fk_id_user: user_id})
         .populate({
             path: 'fk_id_workspace',
             match: { active: true } //Solo quiero los espacios de trabajo activos
         }) //Esto permite expandir sobre la referencia a la tabla de espacios de trabajo
 
-        return workspaces.filter((member)=> member.fk_id_workspace !== null) //Eliminamos los nulls.
+        return workspace.filter((member)=> member.fk_id_workspace !== null) //Eliminamos los nulls.
     }
+
+
+//creamos un espacio de trabajo: workspaces
     async create (fk_id_owner, titulo, imagen, description){
         const workspace = await workspaces.create({
             fk_id_owner,
@@ -39,7 +42,9 @@ class WorkspaceRepository {
 
     //Obtener miembro de un espacio de trabajo por id de espacio de trabajo y id de usuario
     async getMemberByWorkspaceIdAndUserId(workspace_id, user_id){
-        const member = await workspaceMember.findOne({fk_id_workspace: workspace_id, fk_id_user: user_id})
+        const member = await workspaceMember.findOne({
+            fk_id_workspace: workspace_id,
+            fk_id_user: user_id})
         return member
     }
     
@@ -47,6 +52,14 @@ class WorkspaceRepository {
         await workspaces.findByIdAndUpdate(workspace_id, {active: false})
     }
 
+    async inviteMember(workspace_id, user_id, role){
+        const member = await workspaceMember.create({
+            fk_id_workspace: workspace_id,
+            fk_id_user: user_id,
+            role
+        })
+        return member
+    }
 }
 
 const workspaceRepository = new WorkspaceRepository()

@@ -27,7 +27,7 @@ try{
     const authorization_headder= request.headers.authorization
 
     if(!authorization_headder){
-         throw new ServerError('No autorizado', 401)
+        throw new ServerError('No autorizado', 401)
     }
     const auth_token = authorization_headder.split(" ")[1]
     
