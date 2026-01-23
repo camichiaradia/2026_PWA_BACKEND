@@ -8,16 +8,26 @@ import workspaces from "../models/workspaces.model.js"
 
 class WorkspaceController {
     async getWorkspaces (request, response){
-        //Quiero obtener los espacios de trabajo asociados al cliente que hace la consulta
-        console.log("El usuario logueado es: ", request.user) //request.user
-        const user_id = request.user.id
-        const workspaces = await workspaceRepository.getWorkspacesByUserId(user_id)
-        response.json({
-            ok: true,
-            data: {
-                workspaces
+        try{
+            //Quiero obtener los espacios de trabajo asociados al cliente que hace la consulta
+            console.log("El usuario logueado es: ", request.user) //request.user
+            const user_id = request.user.id
+            const workspaces = await workspaceRepository.getWorkspacesByUserId(user_id)
+            return response.json({
+                ok: true,
+                data: {
+                    workspaces
+                }
+            })
             }
-        })
+            catch (error) {
+                console.error("Error en getWorkspaces:", error);
+                return response.status(500).json({
+                    ok: false,
+                    message: "Error al obtener los espacios de trabajo",
+                    error: error.message
+                });
+            }
     }
 
     async create (request, response) {
@@ -95,6 +105,7 @@ class WorkspaceController {
 //2.El email del usuario a invitar existe
                 const {email, role} = request.body
                 const workspaces = request.workspace
+                console.log({workspaces})
 
                 if (!workspace_data) {
                     throw new ServerError('El middleware no encontró el workspace', 404);
@@ -103,6 +114,7 @@ class WorkspaceController {
                 workspace_data._id, 
                 user_to_invite._id
                 );
+                console.log({already_member})
                 if(already_member){
                     throw new ServerError('El usuario ya es miembro de este espacio de trabajo', 400)
                 }
@@ -152,28 +164,27 @@ class WorkspaceController {
                         message: "invitacion enviada",
                         data: null
                     }
-                )
+                ) 
+            }
+            catch (error) {
+                console.log("Error en addMember", error)
+                /* Si tiene status decimos que es un error controlado (osea es esperable) */
+                if (error.status) {
+                    return response.json({
+                        status: error.status,
+                        ok: false,
+                        message: error.message,
+                        data: null
+                    })
+                }
 
-        }
-        catch (error) {
-            console.log("Error en addMember", error)
-            /* Si tiene status decimos que es un error controlado (osea es esperable) */
-            if (error.status) {
                 return response.json({
-                    status: error.status,
                     ok: false,
-                    message: error.message,
+                    status: 500,
+                    message: "Error interno del servidor",
                     data: null
                 })
             }
-
-            return response.json({
-                ok: false,
-                status: 500,
-                message: "Error interno del servidor",
-                data: null
-            })
-        }
     }
 
      async acceptInvitation (request, response){

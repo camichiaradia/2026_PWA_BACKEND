@@ -15,7 +15,11 @@ class WorkspaceRepository {
             path: 'fk_id_workspace',
             match: { active: true } //Solo quiero los espacios de trabajo activos
         }) //Esto permite expandir sobre la referencia a la tabla de espacios de trabajo
-
+        .populate({
+            path: 'fk_id_user',
+            select: 'nombre email' // Esto traerá los datos de la colección 'users'
+        });
+        
         return workspace.filter((member)=> member.fk_id_workspace !== null) //Eliminamos los nulls.
     }
 
