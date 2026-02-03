@@ -5,6 +5,7 @@ import userRepository from "../repository/user.repository.js"
 import jwt from "jsonwebtoken"
 import mail_transporter from "../config/mail.config.js"
 import workspaces from "../models/workspaces.model.js"
+import workspaceChannels from "../models/workspaceChannels.model.js"
 
 class WorkspaceController {
     async getWorkspaces (request, response){
@@ -99,63 +100,71 @@ class WorkspaceController {
         }
     }
 
-    async addMemberRequest(request, response) {
+    async addMember(request, response) {
             try {
 
-//2.El email del usuario a invitar existe
+//2.El email del usuario a invitar existe // Obtenemos el workspace inyectado por el middleware
                 const {email, role} = request.body
-                const workspaces = request.workspace
-                console.log({workspaces})
+                const workspace_data = request.workspace
+                console.log({workspace_data})
 
                 if (!workspace_data) {
                     throw new ServerError('El middleware no encontró el workspace', 404);
                 }
+                
+                console.log({workspaces})
+
+//hacer variable de que el rol sea un rol valido
+// 1. Validar el rol
+                const validRoles = ['owner', 'admin', 'user'];
+                if (!validRoles.includes(role)) {
+                throw new ServerError('El rol no es válido', 400);
+                }
+
+//2. Buscar usuario invitado por email
+                const user_to_invite = await userRepository.buscarUnoPorEmail(email)
+                if(!user_to_invite){
+                    throw new ServerError('El email del invitado no existe.', 404)
+                }
+
+// 3. Verificar si ya es miembro
                 const already_member = await workspaceRepository.getMemberByWorkspaceIdAndUserId(
                 workspace_data._id, 
                 user_to_invite._id
                 );
                 console.log({already_member})
+                
                 if(already_member){
                     throw new ServerError('El usuario ya es miembro de este espacio de trabajo', 400)
                 }
 
-                console.log({workspaces})
-                const user_to_invite = await userRepository.buscarUnoPorEmail(email)
-                if(!user_to_invite){
-                    throw new ServerError('El email del invitado no existe.', 404)
-                }
-//hacer variable de que el rol sea un rol valido
-                if(role !== 'owner' && role !== 'admin' && role !== 'member'){
-                    throw new ServerError('El rol no es valido', 400)
-                }
-
-//4.Enviar un mail al usuario con un link de 'aceptar invitacion' y un token en ese link
-                //Acá hacemos el token
+//4. Generar Token de invitacion y enviar email
                 const token = jwt.sign(
                     {
                         id: user_to_invite._id,
                         email,
-                        workspace: workspaces._id,
+                        workspace: workspace_data._id,
                         role
                     },
-                    ENVIRONMENT.JWT_SECRET_KEY
+                    ENVIRONMENT.JWT_SECRET_KEY,
+                    { expiresIn: '7d' }
                 )
-                //Acá hacemos el email
+
+//5. Enviar Email
                 await mail_transporter.sendMail(
                     {
                         to: email,
                         from: ENVIRONMENT.GMAIL_USERNAME,
-                        subject: `Has sido invitado a ${workspaces.titulo} `,
+                        subject: `Has sido invitado a ${workspace_data.titulo} `,
                         html: `
-                            <h1>Has sido invitado a participar en el espacio de trabajo: ${workspaces.titulo}</h1>
+                            <h1>Has sido invitado a participar en el espacio de trabajo: ${workspace_data.titulo}</h1>
                             <p>Si no reconoces esta invitacion por favor desestima este mail</p>
                             <p>Da click a 'aceptar invitacion' para aceptar la invitacion</p>
                             <a
-                            href='${ENVIRONMENT.URL_BACKEND}/api/workspace/${workspaces._id}/members/accept-invitation?invitation_token=${token}'
+                            href='${ENVIRONMENT.URL_BACKEND}/api/workspace/${workspace_data._id}/members/accept-invitation?invitation_token=${token}'
                             >Aceptar invitacion</a>
                         `
-                    }
-                )
+                    })
 
                 return response.json(
                     {
@@ -187,7 +196,7 @@ class WorkspaceController {
             }
     }
 
-     async acceptInvitation (request, response){
+    async acceptInvitation (request, response){
         try{
             const {invitation_token} = request.query
 
@@ -217,8 +226,57 @@ class WorkspaceController {
             })
         }
     }
-}
 
+    async getById(request, response) {
+        try {
+            const {workspace, member} = request;
+
+            return response.json({
+                ok: true,
+                message: 'Espacio de trabajo seleccionado',
+                data: {
+                    workspace,
+                    member
+                },
+            })
+        }
+        catch (error) {
+                console.error("Error en getById:", error);
+                return response.status(500).json({
+                    ok: false,
+                    message: "Error interno del servidor",
+                    error: error.message
+                });
+            }
+        }
+
+        async getChannels(request, response) {
+            try {
+                // El ID del workspace viene de los parámetros de la URL
+                const user_id = request.user.id
+                const { workspace_id } = request.params;
+                
+                const channels = await workspaceChannels.find({ 
+                    fk_id_workspace: workspace_id,
+                    active: true 
+                });
+
+                return response.json({
+                    ok: true,
+                    message: "Canales obtenidos correctamente",
+                    data: channels
+                });
+            
+            } catch (error) {
+                console.error("Error en getChannels:", error);
+                return response.status(500).json({
+                    ok: false,
+                    message: "Error al obtener los canales",
+                    error: error.message
+                });
+            }
+        }
+} 
 
 const workspaceController = new WorkspaceController()
 export default workspaceController

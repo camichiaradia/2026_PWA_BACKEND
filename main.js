@@ -59,6 +59,8 @@ async function crearEspacioDeTrabajo (){
     await workspaceRepository.addMember(workspace._id, "69739dc3c28542e71874426f", "owner")
 }
 
+
+
 /* crearEspacioDeTrabajo() */
 /* async function crearEspacioDeTrabajo (){
 
@@ -83,3 +85,5 @@ crearEspacioDeTrabajo() */
 2do: Crear endpoint para obtener espacios de trabajo asociados al usuario
 3ro: Probar con postman
 */
+
+/* messagesRepository.getAllByChannelId('6978c83ea4071a20cdf607d3').then(result => console.log(JSON.stringify(result))) */
