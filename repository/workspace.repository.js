@@ -20,7 +20,19 @@ class WorkspaceRepository {
             select: 'nombre email' // Esto traerá los datos de la colección 'users'
         });
         
-        return workspace.filter((member)=> member.fk_id_workspace !== null) //Eliminamos los nulls.
+        const members_workspace = workspace.filter((member)=> member.fk_id_workspace !== null)
+        return members_workspace.map(
+            (member_workspace) => {
+                return {
+                    member_id: member_workspace._id,
+                    member_role: member_workspace.role,
+                    member_id_user: member_workspace.fk_id_user,
+                    workspace_imagen: member_workspace.fk_id_workspace.imagen,
+                    workspace_titulo: member_workspace.fk_id_workspace.titulo,                    
+                    workspace_id: member_workspace.fk_id_workspace._id
+                }
+            }
+        )
     }
 
 
