@@ -29,6 +29,9 @@ app.use(apiKeyMiddleware)
 app.use("/api/auth", authRouter)
 app.use("/api/workspace", workspaceRouter)
 
+import { errorHandler } from "./middlewares/errorHandler.middleware.js"
+app.use(errorHandler)
+
 
 
 app.listen(

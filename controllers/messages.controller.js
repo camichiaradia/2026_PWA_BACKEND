@@ -1,76 +1,40 @@
 import messagesRepository from "../repository/messages.repository.js"
+import { tryCatch } from "../helpers/tryCatch.helper.js"
 
 class MessagesController {
-    async create (request, response){
-        try{
-            const {mensaje} = request.body
-            const member_id = request.member._id
-            const {channel_id} = request.params
-            await messagesRepository.create(member_id, mensaje, channel_id)
+    async create(request, response) {
+        const { mensaje } = request.body
+        const member_id = request.member._id
+        const { channel_id } = request.params
+        await messagesRepository.create(member_id, mensaje, channel_id)
 
-            return response.json(
-                {
-                    ok: true, 
-                    status: 201,
-                    message: 'Mensaje creado con exito'
-                }
-            )
-        }
-        catch (error) {
-            console.log("Error en crear mensaje", error)
-            if (error.status) {
-                return response.json({
-                    status: error.status,
-                    ok: false,
-                    message: error.message,
-                    data: null
-                })
+        return response.json(
+            {
+                ok: true,
+                status: 201,
+                message: 'Mensaje creado con exito'
             }
-
-            return response.json({
-                ok: false,
-                status: 500,
-                message: "Error interno del servidor",
-                data: null
-            })
-        }
+        )
     }
 
-    async getByChannelId (request, response){
-        try{
-            const { channel_id } = request.params;
-            const messages = await messagesRepository.getAllByChannelId(channel_id)
-                
-            return response.json({
-                ok: true,
-                status: 200,
-                message: 'Mensajes obtenidos con éxito',
-                data: {
-                    messages
-                }
-        });
+    async getByChannelId(request, response) {
+        const { channel_id } = request.params;
+        const messages = await messagesRepository.getAllByChannelId(channel_id)
 
-        }
-        catch (error) {
-            console.log("Error en crear mensaje", error)
-            if (error.status) {
-                return response.json({
-                    status: error.status,
-                    ok: false,
-                    message: error.message,
-                    data: null
-                })
+        return response.json({
+            ok: true,
+            status: 200,
+            message: 'Mensajes obtenidos con éxito',
+            data: {
+                messages
             }
-
-            return response.json({
-                ok: false,
-                status: 500,
-                message: "Error interno del servidor",
-                data: null
-            })
-        }
+        });
     }
 }
 
 const messagesController = new MessagesController()
+
+messagesController.create = tryCatch(messagesController.create)
+messagesController.getByChannelId = tryCatch(messagesController.getByChannelId)
+
 export default messagesController
