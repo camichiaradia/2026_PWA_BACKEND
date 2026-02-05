@@ -21,6 +21,10 @@ lee el request.headers.['content-type'] y si el valor es 'application/json' ento
 */
 app.use(express.json())
 
+import apiKeyMiddleware from "./middlewares/apiKey.middleware.js"
+app.use(apiKeyMiddleware)
+
+
 
 app.use("/api/auth", authRouter)
 app.use("/api/workspace", workspaceRouter)
@@ -28,7 +32,7 @@ app.use("/api/workspace", workspaceRouter)
 
 
 app.listen(
-    8080, 
+    8080,
     () => {
         console.log('Nuestra app se escucha en el puerto 8080')
     }
@@ -41,13 +45,13 @@ app.listen(
     html: `<h1>Probando nodemailer</h1>`
 }) */
 
-    
+
 /* 
 //Quiero crear un espacio de trabajo de prueba
 */
-async function crearEspacioDeTrabajo (){  
+async function crearEspacioDeTrabajo() {
 
-//Creo el espacio de trabajo de prueba
+    //Creo el espacio de trabajo de prueba
     const workspace = await workspaceRepository.create(
         "69739dc3c28542e71874426f",
         "test",
@@ -55,7 +59,7 @@ async function crearEspacioDeTrabajo (){
         "Descripcion del espacio de trabajo"
     )
     console.log("¡Workspace creado con éxito!")
-//Me agrego como miembro
+    //Me agrego como miembro
     await workspaceRepository.addMember(workspace._id, "69739dc3c28542e71874426f", "owner")
 }
 
