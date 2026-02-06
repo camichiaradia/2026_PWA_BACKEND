@@ -29,8 +29,8 @@ app.use(apiKeyMiddleware)
 app.use("/api/auth", authRouter)
 app.use("/api/workspace", workspaceRouter)
 
-import { errorHandler } from "./middlewares/errorHandler.middleware.js"
-app.use(errorHandler)
+import { errorHandlerMiddleware } from "./middlewares/errorHandler.middleware.js"
+app.use(errorHandlerMiddleware)
 
 
 
@@ -41,17 +41,7 @@ app.listen(
     }
 )
 
-/* mail_transporter.sendMail({
-    from: ENVIRONMENT.GMAIL_USERNAME,
-    to: ENVIRONMENT.GMAIL_USERNAME,
-    subject: 'Probando nodemailer',
-    html: `<h1>Probando nodemailer</h1>`
-}) */
-
-
-/* 
-//Quiero crear un espacio de trabajo de prueba
-*/
+/* Quiero crear un espacio de trabajo de prueba*/
 async function crearEspacioDeTrabajo() {
 
     //Creo el espacio de trabajo de prueba
@@ -69,26 +59,11 @@ async function crearEspacioDeTrabajo() {
 
 
 /* crearEspacioDeTrabajo() */
-/* async function crearEspacioDeTrabajo (){
 
-    //Creo el espacio de trabajo de prueba
-    const workspace = await workspaceRepository.create(
-        '69664b767fa3b6ffd51dcd7b', //Remplazen por su id
-        'test',
-        'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-        'Descripcion del espacio de trabajo'
-    )
-    //Me agrego como miembro
-    await workspaceRepository.addMember(workspace._id, '69664b767fa3b6ffd51dcd7b', 'Owner')
-}
-
-crearEspacioDeTrabajo() */
-
-/* 
+/*
 1ero:
     Crear espacio de trabajo
     Agregar miembro
-
 2do: Crear endpoint para obtener espacios de trabajo asociados al usuario
 3ro: Probar con postman
 */
