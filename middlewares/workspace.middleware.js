@@ -2,6 +2,7 @@
 Verificar que el workspace exista
 Verificar que el usuario sea miembro del workspace
 Verificar que tenga el rol correcto
+un middlewere si quiere puede comunicarse con el controlador mediante request. 
 */
 
 import workspaceRepository from "../repository/workspace.repository.js"
@@ -15,7 +16,7 @@ function workspaceMiddleware(authorized_roles = []) {
 
             const user_id = request.user.id
             const workspace_id = request.params.workspace_id
-//1.El cliente pertenece al workspace y tiene un rol de owner o admin
+            //1.El cliente pertenece al workspace y tiene un rol de owner o admin
             const workspace_selected = await workspaceRepository.getById(workspace_id)
 
             if (!workspace_selected) {

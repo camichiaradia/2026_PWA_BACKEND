@@ -2,11 +2,11 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-const API_URL = 'http://localhost:8080/api/workspace'; // Need an endpoint that exists
+const API_URL = 'http://localhost:8080/api/workspace'; //Asegura que este endpoint exista
 const API_KEY = process.env.API_KEY;
 
 async function testApiKey() {
-    console.log("Testing API Key Middleware...");
+    console.log("Probando el Middleware de la API Key...");
 
     // Test 1: No API Key
     try {
@@ -16,14 +16,14 @@ async function testApiKey() {
                 'Content-Type': 'application/json'
             }
         });
-        
+
         if (res.status === 401) {
-            console.log("✅ Custom test passed: No API Key returned 401");
+            console.log("✅ Prueba pasada: Sin API Key devolvió 401 (No autorizado)");
         } else {
-            console.error(`❌ Custom test failed: No API Key returned ${res.status}`);
+            console.error(`❌ Prueba fallida: Sin API Key devolvió ${res.status}`);
         }
     } catch (err) {
-        console.error("Test 1 Error:", err.message);
+        console.error("Error en Prueba 1:", err.message);
     }
 
     // Test 2: Invalid API Key
@@ -35,14 +35,14 @@ async function testApiKey() {
                 'x-api-key': 'INVALID_KEY'
             }
         });
-        
+
         if (res.status === 401) {
-            console.log("✅ Custom test passed: Invalid API Key returned 401");
+            console.log("✅ Prueba pasada: API Key inválida devolvió 401");
         } else {
-            console.error(`❌ Custom test failed: Invalid API Key returned ${res.status}`);
+            console.error(`❌ Prueba fallida: API Key inválida devolvió ${res.status}`);
         }
     } catch (err) {
-        console.error("Test 2 Error:", err.message);
+        console.error("Error en Prueba 2:", err.message);
     }
 
     // Test 3: Valid API Key
@@ -54,14 +54,14 @@ async function testApiKey() {
                 'x-api-key': API_KEY
             }
         });
-        
+
         if (res.status !== 401) {
-            console.log(`✅ Custom test passed: Valid API Key returned ${res.status} (Not 401)`);
+            console.log(`✅ Prueba pasada: API Key válida devolvió ${res.status} (Exitoso!)`);
         } else {
-            console.error(`❌ Custom test failed: Valid API Key returned 401`);
+            console.error(`❌ Prueba fallida: API Key válida devolvió 401`);
         }
     } catch (err) {
-        console.error("Test 3 Error:", err.message);
+        console.error("Error en Prueba 3:", err.message);
     }
 }
 

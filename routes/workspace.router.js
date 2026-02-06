@@ -7,8 +7,6 @@ import channelMiddleware from "../middlewares/channel.middleware.js";
 import messagesController from "../controllers/messages.controller.js";
 import { channelRepository } from "../repository/channel.repository.js";
 
-
-
 const workspaceRouter = express.Router()
 
 // Crear Workspaces
@@ -24,29 +22,29 @@ workspaceRouter.delete('/:workspace_id', authMiddleware, workspaceController.del
 
 //Acepta a un nuevo miembro al espacio de trabajo solo si es owner/admin
 workspaceRouter.post(
-    '/:workspace_id/members', 
-    authMiddleware, 
-    workspaceMiddleware(['owner', 'admin']), 
+    '/:workspace_id/members',
+    authMiddleware,
+    workspaceMiddleware(['owner', 'admin']),
     workspaceController.addMember)
 //Enviar invitación a un usuario para que ingrese al espacio de trabajo
 workspaceRouter.get('/:workspace_id/members/accept-invitation', workspaceController.acceptInvitation)
 
 // Chanells: Crear canales
 workspaceRouter.post(
-    '/:workspace_id/channels', 
-    authMiddleware, 
+    '/:workspace_id/channels',
+    authMiddleware,
     workspaceMiddleware(['owner', 'admin']),
     channelController.create)
 // Chanells: Obtener los canales de un workspace específico (Solo si eres miembro)
-workspaceRouter.get('/:workspace_id/channels', 
-    authMiddleware, 
-    workspaceMiddleware(), 
+workspaceRouter.get('/:workspace_id/channels',
+    authMiddleware,
+    workspaceMiddleware(),
     channelController.getAllByWorkspaceId)
 
 
 //Rutas del Channel.middleware.js
 workspaceRouter.get(
-    '/:workspace_id/channels/:channel_id', 
+    '/:workspace_id/channels/:channel_id',
     authMiddleware,
     workspaceMiddleware(),
     channelMiddleware,
