@@ -28,11 +28,11 @@ class WorkspaceController {
 
     async create(request, response, next) {
         try {
-            const { titulo, imagen, description } = request.body
+            const { titulo, /* imagen, */ description } = request.body
             const user_id = request.user.id
 
             console.log("1. Creando workspace para el usuario:", user_id)
-            const workspace = await workspaceRepository.create(user_id, titulo, imagen, description)
+            const workspace = await workspaceRepository.create(user_id, titulo, null, description)
 
             console.log("2. Workspace creado con ID:", workspace._id);
 
