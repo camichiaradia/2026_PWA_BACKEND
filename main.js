@@ -13,12 +13,12 @@ const app = express()
 /* 
 Esto permite que otras direcciones distintas a la nuesta puedan consultar nuestro servidor
 */
-app.use(cors({
-    origin: 'http://localhost:5173',
+app.use(cors(/* {
+   origin: 'http://localhost:5173',
     allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
-}))
+    credentials: true 
+} */))
 
 //Habilita a mi servidor a recibir json por body
 /* 

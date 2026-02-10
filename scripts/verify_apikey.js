@@ -1,8 +1,9 @@
 
 import dotenv from 'dotenv';
+import ENVIRONMENT from "../BACKEND/config/environment.config.js";
 dotenv.config();
 
-const API_URL = 'http://localhost:8080/api/workspace'; //Asegura que este endpoint exista
+const API_URL = `${ENVIRONMENT.URL_BACKEND}/api/workspace`; //Asegura que este endpoint exista
 const API_KEY = process.env.API_KEY;
 
 async function testApiKey() {

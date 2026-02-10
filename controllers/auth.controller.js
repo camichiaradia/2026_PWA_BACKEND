@@ -32,7 +32,7 @@ class AuthController {
             } */
             )
 
-            mail_transporter.sendMail(
+            await mail_transporter.sendMail(
                 {
                     from: ENVIRONMENT.GMAIL_USERNAME,
                     to: email,
@@ -42,7 +42,7 @@ class AuthController {
                 <p>Necesitamos que verifiques tu mail</p>
                 <p>Haz click en "Verificar" para verificar este mail</p>
                 <a 
-                href='http://localhost:8080/api/auth/verify-email?verification_email_token=${verification_email_token}'
+                href='${ENVIRONMENT.URL_FRONTEND}/api/auth/verify-email?verification_email_token=${verification_email_token}'
                 >Verificar</a>
                 <br>
                 <span>Si desconoces este registro desestima este mail</span>
@@ -111,9 +111,9 @@ class AuthController {
     }
 
     async verifyEmail(request, response, next) {
-        try {
-            const { verification_email_token } = request.query
-
+    try {
+        console.log("Query recibida:", request.query); // Agrega esto para debug
+        const { verification_email_token } = request.query;
             if (!verification_email_token) {
                 throw new ServerError('No se envio el token de verificacion', 400)
             }
