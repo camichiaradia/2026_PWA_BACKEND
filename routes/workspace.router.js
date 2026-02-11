@@ -17,7 +17,10 @@ workspaceRouter.get('/', authMiddleware, workspaceController.getWorkspaces)
 // Obtener un workspace específico (Solo si eres miembro)
 workspaceRouter.get('/:workspace_id', authMiddleware, workspaceMiddleware(), workspaceController.getById)
 
-//Eliminar a un id, del espacio de trabajo
+//Actualizar un workspace (espacio de trabajo)
+workspaceRouter.put('/:workspace_id', authMiddleware, workspaceController.update)
+
+//Eliminar un workspace (espacio de trabajo)
 workspaceRouter.delete('/:workspace_id', authMiddleware, workspaceController.delete)
 
 //Acepta a un nuevo miembro al espacio de trabajo solo si es owner/admin

@@ -50,6 +50,23 @@ class WorkspaceController {
         }
     }
 
+    async update(request, response, next) {
+        try {
+            const { workspace_id } = request.params
+            const { titulo, description } = request.body
+            const workspace_updated = await workspaceRepository.update(workspace_id, titulo, description)
+            response.json({
+                ok: true,
+                data: {
+                    message: 'Espacio de trabajo actualizado correctamente',
+                    workspace_updated
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+
     async delete(request, response, next) {
         try {
             const user_id = request.user.id

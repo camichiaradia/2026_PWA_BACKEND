@@ -1,8 +1,8 @@
 import channelMessages from "../models/channelMessages.model.js";
 import { populate } from "dotenv";
 
-class MessagesRepository{
-    async create(member_id, mensaje, channel_id){
+class MessagesRepository {
+    async create(member_id, mensaje, channel_id) {
         return await channelMessages.create({
             fk_ws_member_id: member_id,
             mensaje: mensaje,
@@ -10,20 +10,28 @@ class MessagesRepository{
         })
     }
 
-    async getAllByChannelId (channel_id){
-        const messages = await channelMessages.find ({fk_ws_channel_id: channel_id})
-        .populate(
-            {
-                path: "fk_ws_member_id",
-                select: "role fk_id_user",
-                populate: {
-                    path: "fk_id_user",
-                    select: "username email"
-                }      
-            }
-        )
+    async getAllByChannelId(channel_id) {
+        const messages = await channelMessages.find({ fk_ws_channel_id: channel_id })
+            .populate(
+                {
+                    path: "fk_ws_member_id",
+                    select: "role fk_id_user",
+                    populate: {
+                        path: "fk_id_user",
+                        select: "username email"
+                    }
+                }
+            )
 
         return messages
+    }
+
+    async update(workspace_id, data) {
+        return await channelMessages.findByIdAndUpdate(
+            workspace_id,
+            { $set: data },
+            { new: true }
+        );
     }
 }
 
