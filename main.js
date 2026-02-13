@@ -10,35 +10,28 @@ connectMongoDB()
 //Crear un servidor web (Express app)
 const app = express()
 
-/* 
-Esto permite que otras direcciones distintas a la nuesta puedan consultar nuestro servidor
-*/
-app.use(cors(/* {
-   origin: 'http://localhost:5173',
-    allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true 
-} */))
-
-//Habilita a mi servidor a recibir json por body
-/* 
-lee el request.headers.['content-type'] y si el valor es 'application/json' entonces guarda en request.body el json transformado
-*/
+// Configuración de Middlewares
+app.use(cors())
 app.use(express.json())
-
 import apiKeyMiddleware from "./middlewares/apiKey.middleware.js"
 app.use(apiKeyMiddleware)
 
+/* App.use(cors())
+- Permite que otras direcciones distintas a la nuesta puedan consultar nuestro servidor*/
 
+/* App.use(express.json())
+- Habilita a mi servidor a recibir json por body
+- lee el request.headers.['content-type'] y si el valor es 'application/json' entonces guarda en request.body el json transformado*/
 
+// Rutas
 app.use("/api/auth", authRouter)
 app.use("/api/workspace", workspaceRouter)
 
+// Manejo de errores: Middlewares
 import { errorHandlerMiddleware } from "./middlewares/errorHandler.middleware.js"
 app.use(errorHandlerMiddleware)
 
-
-
+// Iniciar el servidor
 app.listen(
     8080,
     () => {

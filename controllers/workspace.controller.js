@@ -55,6 +55,9 @@ class WorkspaceController {
             const { workspace_id } = request.params
             const { titulo, description } = request.body
             const workspace_updated = await workspaceRepository.update(workspace_id, titulo, description)
+            if (!workspace_updated) {
+                throw new ServerError('No se pudo encontrar el espacio para actualizar', 404);
+            }
             response.json({
                 ok: true,
                 data: {

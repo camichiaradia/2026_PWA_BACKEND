@@ -29,7 +29,8 @@ class WorkspaceRepository {
                     member_id_user: member_workspace.fk_id_user,
                     workspace_imagen: member_workspace.fk_id_workspace.imagen,
                     workspace_titulo: member_workspace.fk_id_workspace.titulo,
-                    workspace_id: member_workspace.fk_id_workspace._id
+                    workspace_id: member_workspace.fk_id_workspace._id,
+                    workspace_owner: member_workspace.fk_id_workspace.fk_id_owner
                 }
             }
         )
@@ -66,11 +67,19 @@ class WorkspaceRepository {
     }
 
     async update(workspace_id, data) {
-        return await workspaces.findByIdAndUpdate(workspace_id, data, { new: true });
+        return await workspaces.findByIdAndUpdate(
+            workspace_id,
+            { $set: data },
+            { new: true }
+        )
     }
 
     async delete(workspace_id) {
-        await workspaces.findByIdAndUpdate(workspace_id, { active: false })
+        await workspaces.findByIdAndUpdate(
+            workspace_id,
+            { active: false },
+            { new: true }
+        )
     }
 
     async inviteMember(workspace_id, user_id, role) {
